@@ -1,0 +1,57 @@
+general
+https://www.udemy.com/graphql-bootcamp/learn/v4/t/lecture/11838218?start=0
+npm run start - babel script start
+Wed 2 pm.
+finished video 15
+
+***"When setting up a field who's value is another one of our
+custom types we have to define a function that tells graphql how to get,
+in this case author, if we had the post.  We are going to do that by 
+difining a new root property on resolvers, so alongside query resolver,
+not inside query, we are going to add a new property"***
+
+
+
+
+
+
+
+
+
+
+where I'm stuck
+
+how I resolved issues
+
+video 17 arrays part II
+queries with parameters not working
+I had parts of resolvers incorrect:
+
+ query: users(query: String): [User]!
+ with resolver:
+ users(parent, args, ctx, info){
+            if (args.query){
+                    return users
+            }
+            return users.filter((user)=>{
+                return user.name.toLowerCase().includes(args.query.toLowerCase())
+            })
+        },
+
+        changing if (args.query){
+            to if (!args.query){
+                fixed the problem.
+I'm not 100% what that crucial ! does.  found answer by comparing to instructor code
+    
+
+    ***when I tried to add comments: [Comment!]
+    to the resolver Query i failed to include the []***
+        
+
+things I've learned:
+- I learned how to export and import specific things in and out of files and I learned the difference between a named export and a default export
+- Scalar types : just stores a single thing
+- Non-scalar types: object / array
+- Shift command p, shortcut is dispalayed to the side of whatever you are looking to do.
+- I finally understand args, how to define,query and require them, also have a much better understanding of how to 
+write simple resolvers
