@@ -21,7 +21,35 @@ not inside query, we are going to add a new property"***
 
 where I'm stuck
 
+
+
+
+lesson 21:
+challenge directions:
+//update all comments in the array to have a new author field (use one of the user ids as value)
+how does using the user ID (instead of the name work/function?)
+
 how I resolved issues
+
+summary:
+-failed to pass an argument to a newly built resolver function
+
+extended:
+
+*starting server -
+I've got an odd thing going on when I try to npm run start.  I will copy and past error message in here
+next time it happens.  What seems odd is that it seems random and inconsistant - I'm sure it's not, but
+it feels like it will work on moment, not the next, then it will work again the next try.  something
+about being verbose shows up in the error message
+
+
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! graphql-bootcamp@1.0.0 start: `babel-node src/index.js`
+I had a mutation resolver function : const emailTaken = users.some(()
+that needed to be: const emailTaken = users.some((user)
+so I had failed to pass an argument into the function
+and I had an extra closing }
 
 video 17 arrays part II
 queries with parameters not working
