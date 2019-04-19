@@ -15,6 +15,18 @@ import uuidv4 from 'uuid/v4'
 //set up a resolver for the Post comments field that returns all comments belonging to that post
 //run sample query that gets all posts and all their comments
 //
+
+//Allow clients to crete a new comment
+
+//1. Define a new createCommen mutation
+//should take text, author, post
+//should return a comment
+//2. Define resolver method for createComment
+//confirm user exists, if not throw error
+//confirm that the psot exists and is published, else throw error
+//if they do exists, create the comment and return it
+//3. run mutation and add a comment
+//4. use comments query to verify the comment was added
 const users = [{
     id: '1',
     name: 'Andrew',
@@ -84,8 +96,9 @@ type Query {
 }
 
 type Mutation {
-    createUser(name: String!, email: String!, age: Int): User!
-}
+        createUser(name: String!, email: String!, age: Int): User!
+        createPost(title: String!, body: String!, published: Boolean!, author:ID!):Post!
+    }
 
 type User {
     id: ID!
@@ -158,21 +171,42 @@ const resolvers = {
             }
         },
         Mutation: {
-            createUser(parent, args, ctx, info){
-                 const emailTaken = users.some((user)=> user.email === args.email)
+            createUser(parent, args, ctx, info) {
+                const emailTaken = users.some((user) => user.email === args.email)
+
                 if (emailTaken) {
                     throw new Error('Email taken')
-                } 
+                }
+
                 const user = {
                     id: uuidv4(),
                     name: args.name,
                     email: args.email,
                     age: args.age
                 }
+
                 users.push(user)
 
                 return user
-                }   
+            },
+            
+            createPost(parent, args, ctx, info){
+                const userExists = users.some((user)=> user.id === args.author)
+
+                if(!userExists){
+                    throw new Error('User not found')
+                }
+                const post = {
+                    id: uuidv4(),
+                    title: args.title,
+                    body: args.body,
+                    published: args.published,
+                    author: args.author
+                }
+                posts.push(post)
+                return post
+            }
+                
             },
         
         Post: {

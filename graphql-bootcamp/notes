@@ -21,6 +21,12 @@ not inside query, we are going to add a new property"***
 
 where I'm stuck
 
+in general, how do I get back to a known?  When something breaks I never know what breaks it
+Even when I think I'm doing small steps and checking in between
+I never know what my last known was
+
+
+server not starting:
 
 
 
@@ -33,6 +39,7 @@ how I resolved issues
 
 summary:
 -failed to pass an argument to a newly built resolver function
+- server not starting: shutting vsc down, restarting project fixes this problem - don't know why
 
 extended:
 
@@ -50,6 +57,26 @@ I had a mutation resolver function : const emailTaken = users.some(()
 that needed to be: const emailTaken = users.some((user)
 so I had failed to pass an argument into the function
 and I had an extra closing }
+
+Aarons-MacBook-Air:udemy aaronrbeck$ node index.jsinternal/modules/cjs/loader.js:651
+    throw err;
+
+    Error: Cannot find module '/Users/aaronrbeck/Documents/Assignments/sandbox/udemy/index.js'
+Error: Cannot find module '/Users/aaronrbeck/Documents/Assignments/sandbox/udemy/index.js'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:649:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:575:25)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:862:12)
+    at internal/main/run_main_module.js:21:11
+so, a dependancy is missing? how do you know which depandancy?
+
+this is so bizzare. at times it feel like modules just decide to randomly disconnect?
+i tried an npm install, then another run start, but got this:
+npm ERR! path /Users/aaronrbeck/Documents/Assignments/sandbox/udemy/package.json
+npm ERR! code ENOENT
+npm ERR! errno -2
+npm ERR! syscall open
+npm ERR! enoent ENOENT: no such file or directory, open '/Users/aaronrbeck/Documents/Assignments/sandbox/udemy/package.json'
+
 
 video 17 arrays part II
 queries with parameters not working
