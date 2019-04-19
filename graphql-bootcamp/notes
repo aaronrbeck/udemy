@@ -27,7 +27,12 @@ I never know what my last known was
 
 
 server not starting:
+ok, sometimes the server starts, but then fails with:
+The server is up!
+Error: The type of Mutation.createComment(post:) must be Input Type but got: Post!.
 
+
+**I don't understand where resovler args originate from
 
 
 lesson 21:

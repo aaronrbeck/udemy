@@ -18,7 +18,7 @@ import uuidv4 from 'uuid/v4'
 
 //Allow clients to crete a new comment
 
-//1. Define a new createCommen mutation
+//1. Define a new createComment mutation
 //should take text, author, post
 //should return a comment
 //2. Define resolver method for createComment
@@ -98,6 +98,7 @@ type Query {
 type Mutation {
         createUser(name: String!, email: String!, age: Int): User!
         createPost(title: String!, body: String!, published: Boolean!, author:ID!):Post!
+        createComment(text: String!, author: ID!, post: ID!):Comment!
     }
 
 type User {
@@ -205,6 +206,23 @@ const resolvers = {
                 }
                 posts.push(post)
                 return post
+            },
+            
+            createComment(parent, args, ctx, info){
+                const userExists = users.some((user) => user.id === args.author)
+                const postExists = posts.some((post)=> post.id === args.post && post.published)
+                if (!userExists || !postExists){
+                    throw new Error ('Did not find user and post')
+                }
+                
+                const comment = {
+                    id: uuidv4(),
+                    text: args.text, 
+                    author: args.author,
+                    post: args.post
+                }
+                comments.push(comment)
+                return comment
             }
                 
             },
