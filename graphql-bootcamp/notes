@@ -13,7 +13,15 @@ not inside query, we are going to add a new property"***
 
 
 
+Useful New dependancies:
 
+npm install babel-plugin-transorm-object-rest-spread
+allows you to spread one object into a second object
+requires
+"plugins": [
+        "transform-object-rest-spread"
+    ] 
+    to be added to your .bagelrc document
 
 
 
@@ -45,7 +53,7 @@ how I resolved issues
 summary:
 -failed to pass an argument to a newly built resolver function
 - server not starting: shutting vsc down, restarting project fixes this problem - don't know why
-
+     -I've had to do the above iii times
 extended:
 
 *starting server -

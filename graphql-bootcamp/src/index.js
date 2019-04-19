@@ -179,6 +179,20 @@ const resolvers = {
                     throw new Error('Email taken')
                 }
 
+
+                // example npm install babel - plugin - transorm - object - rest - spread
+                // see notes page for reminder
+                // const one = {
+                //     name: 'Philidelphia',
+                //     country: 'USA'
+
+                // }
+                // const two = {
+                //     population: 15000000
+                //     ...one
+                // }
+
+
                 const user = {
                     id: uuidv4(),
                     name: args.name,
@@ -197,12 +211,10 @@ const resolvers = {
                 if(!userExists){
                     throw new Error('User not found')
                 }
+                //using the babel spread plugin below:
                 const post = {
                     id: uuidv4(),
-                    title: args.title,
-                    body: args.body,
-                    published: args.published,
-                    author: args.author
+                    ...args
                 }
                 posts.push(post)
                 return post
@@ -214,12 +226,10 @@ const resolvers = {
                 if (!userExists || !postExists){
                     throw new Error ('Did not find user and post')
                 }
-                
+                //manual, no babel spread plugin below:
                 const comment = {
                     id: uuidv4(),
-                    text: args.text, 
-                    author: args.author,
-                    post: args.post
+                    ...args
                 }
                 comments.push(comment)
                 return comment
