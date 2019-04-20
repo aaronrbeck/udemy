@@ -7,27 +7,19 @@ import uuidv4 from 'uuid/v4'
 // Demo user data
 
 
+//Create input types for CreatePost and CreateComment
 
-//update all comments in the array to have a new author field (use on of the user ids as value)
+//1. Create an input type for createPost with the same filds, use data or post as arg name
+//2.  Update createPost resolver to use this new object
+//3.  Verify application still works by creating a post then fetching it
+//4. Create an input type for creteComment with the same fields.  Use "data" or "comment" as arg name
+//5. Update craeteComment resolver to suse this new object
+//6.  verify application still works by creating a comment and then fetching it
 
-//run a query that gets all comments and gets the post name
-//set up a comments field on Post
-//set up a resolver for the Post comments field that returns all comments belonging to that post
-//run sample query that gets all posts and all their comments
-//
+//scalar types: string, boolean, Int, Float, ID
 
-//Allow clients to crete a new comment
 
-//1. Define a new createComment mutation
-//should take text, author, post
-//should return a comment
-//2. Define resolver method for createComment
-//confirm user exists, if not throw error
-//confirm that the psot exists and is published, else throw error
-//if they do exists, create the comment and return it
-//3. run mutation and add a comment
-//4. use comments query to verify the comment was added
-const users = [{
+let users = [{
     id: '1',
     name: 'Andrew',
     email: 'andrew@example.com',
@@ -42,7 +34,7 @@ const users = [{
     email: 'mike@example.com'
 }]
 
-const posts = [{
+let posts = [{
     id: '10',
     title: 'GraphQL 101',
     body: 'This is how to use GraphQL...',
@@ -62,7 +54,7 @@ const posts = [{
     author: '2'
 }]
 
-const comments = [{
+let comments = [{
     id: '102',
     text: 'This worked well for me. Thanks!',
     author: '3',
@@ -81,7 +73,7 @@ const comments = [{
     id: '105',
     text: 'Nevermind. I got it to work.',
     author: '1',
-    post: '11'
+    post: '12'
 }]
 
 // Type definitions (schema)
@@ -96,10 +88,29 @@ type Query {
 }
 
 type Mutation {
-        createUser(name: String!, email: String!, age: Int): User!
-        createPost(title: String!, body: String!, published: Boolean!, author:ID!):Post!
-        createComment(text: String!, author: ID!, post: ID!):Comment!
+        createUser(data: CreateUserInput!): User!
+        deleteUser(id: ID!): User!
+        createPost(data: CreatePostInput!):Post!
+        createComment(data: CreateCommentInput!):Comment!
     }
+input CreateUserInput{
+    name: String!
+    email: String!
+    age: Int
+}
+
+input CreatePostInput{
+    title: String!
+    body: String!
+    published: Boolean!
+    author: ID!
+}
+
+input CreateCommentInput{
+    text: String!
+    author: ID!
+    post: ID!
+}
 
 type User {
     id: ID!
@@ -192,7 +203,7 @@ const resolvers = {
                 //     ...one
                 // }
 
-
+                //manual, no babel spread plugin below:
                 const user = {
                     id: uuidv4(),
                     name: args.name,
@@ -204,9 +215,42 @@ const resolvers = {
 
                 return user
             },
+
+            deleteUser(parent, args, ctx, info){
+                const userIndex = users.findIndex((user)=> user.id === args.id)
+                
+                if (userIndex === -1) {
+                    throw new Error ('No user found')
+                }
+                
+                const deletedUsers = users.splice(userIndex, 1)
+
+
+
+                //remove all associated posts and all associated comments:
+                ``
+                posts = posts.filter((post) => {
+                    const match = post.author === args.id
+                    if (match) {
+                        comments = comments.filter((comment)=> comment.post !== post.id)
+                    }
+
+                    return !match
+                        
+                })
+
+                //remove all comments this user created
+
+                comments = comments.filter((comment)=> comment.author !== args.id)
+                    
+                return deletedUsers[0]
+              
+
+
+            },
             
             createPost(parent, args, ctx, info){
-                const userExists = users.some((user)=> user.id === args.author)
+                const userExists = users.some((user)=> user.id === args.data.author)
 
                 if(!userExists){
                     throw new Error('User not found')
@@ -214,22 +258,22 @@ const resolvers = {
                 //using the babel spread plugin below:
                 const post = {
                     id: uuidv4(),
-                    ...args
+                    ...args.data
                 }
                 posts.push(post)
                 return post
             },
             
             createComment(parent, args, ctx, info){
-                const userExists = users.some((user) => user.id === args.author)
-                const postExists = posts.some((post)=> post.id === args.post && post.published)
+                const userExists = users.some((user) => user.id === args.data.author)
+                const postExists = posts.some((post)=> post.id === args.data.post && post.published)
                 if (!userExists || !postExists){
                     throw new Error ('Did not find user and post')
                 }
                 //manual, no babel spread plugin below:
                 const comment = {
                     id: uuidv4(),
-                    ...args
+                    ...args.data
                 }
                 comments.push(comment)
                 return comment
