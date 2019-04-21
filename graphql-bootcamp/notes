@@ -47,7 +47,10 @@ mess up choosing between () and {}
     - I have a hard time forgettting to feed parameters into my functions
     This came back with '_users.splice ' is not a function so:
     - everything checks out against instructor code so
-    -
+    - now I'm really confused: deleteUser certainly not running in the playground 
+    the same way that the instructor's is running in the playground, yet when ID
+    run by  user query, my user 1 does not exist  - so does that mean that it did work and 
+    delete the user?
 
 
 ** my posts query is not working, yet matches instructors query:
@@ -89,9 +92,9 @@ query{
       so same thing is happening in both?
 
 
+**** still can't do this without looking back to instructor solution - how do I resolve that?
 
-
-in general, how do I get back to a known?  When something breaks I never know what breaks it
+****in general, how do I get back to a known?  When something breaks I never know what breaks it
 Even when I think I'm doing small steps and checking in between
 I never know what my last known was
 
