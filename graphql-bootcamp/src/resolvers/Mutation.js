@@ -211,7 +211,7 @@ return user
         return post
     },
 
-    createComment(parent, args, { db }, info){
+    createComment(parent, args, { db, pubsub }, info){
         const userExists = db.users.some((user) => user.id === args.data.author)
         const postExists = db.posts.some((post) => post.id === args.data.post && post.published)
         if (!userExists || !postExists) {
@@ -223,6 +223,13 @@ return user
             ...args.data
         }
         db.comments.push(comment)
+
+        //because we have a subscription for comments, and comments
+        //get created here in createComment, we need to call pubsub.publish
+        //here providing two arguements inside a template literal string:
+        //the channel name, and the actual data 
+        pubsub.publish(`comment ${args.data.post}`, { comment })
+
         return comment
     },
     // 2. define resolver for the mutation
