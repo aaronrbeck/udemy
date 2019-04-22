@@ -37,6 +37,6 @@ const Query = {
             published: false
         }
     }
-},
+}
 
 export { Query as default }

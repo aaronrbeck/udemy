@@ -67,6 +67,44 @@ const Mutation = {
 
     },
 
+    updateUser(parent, args, { db }, info){
+        //when I added upDate user I failed to include
+        const { id, data } = args
+        //which meant that id had never been defined and while the file compiled
+        //when I ran the updateUswer mutation, the query failed and I got back:
+        // {
+        //     "data": null,
+        //         "errors": [
+        //             {
+        //                 "message": "Cannot read property 'id' of undefined",
+        // things are still not resolved
+        //Unfortunatly I was not adble to track this down on my own
+        //I found the error by doing a line by line comparison to instructor files
+        //so, how do I get to the point where I track this stuff down on my own?
+        //another mistake I made was user => db.user.id in the call back function
+        //the db should not be inside the call back function
+        //solved
+        const user = db.users.find((user => user.id === id))
+        if (!user){
+            throw new Error ('User not found')
+        }
+        if (typeof data.email === "string"){
+            const emailTaken = db.users.some((user)=> user.email === data.email)
+            if (emailTaken){
+                throw new Error('Email Taken')
+            }
+            user.email = data.email
+        }
+
+        if (typeof data.name === 'string'){
+            user.name = data.name
+        }
+        
+        if (typeof data.age !== 'undefined'){
+            user.age = data.age
+        }
+return user
+    },
 
 
     createPost(parent, args, { db }, info){

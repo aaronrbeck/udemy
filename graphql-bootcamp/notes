@@ -115,11 +115,17 @@ how does using the user ID (instead of the name work/function?)
 
 how I resolved issues
 
-summary:
+******summary:
 -failed to pass an argument to a newly built resolver function
 - server not starting: shutting vsc down, restarting project fixes this problem - don't know why
      -I've had to do the above iii times
-extended:
+
+
+
+
+
+
+*******extended:
 
 *starting server -
 I've got an odd thing going on when I try to npm run start.  I will copy and past error message in here
@@ -188,3 +194,23 @@ things I've learned:
 - Shift command p, shortcut is dispalayed to the side of whatever you are looking to do.
 - I finally understand args, how to define,query and require them, also have a much better understanding of how to 
 write simple resolvers
+
+updateUser(parent, args, { db }, info){
+        //when I added upDate user I failed to include
+        const { id, data } = args
+        //which meant that id had never been defined and while the file compiled
+        //when I ran the updateUswer mutation, the query failed and I got back:
+        // {
+        //     "data": null,
+        //         "errors": [
+        //             {
+        //                 "message": "Cannot read property 'id' of undefined",
+        // things are still not resolved
+        //Unfortunatly I was not adble to track this down on my own
+        //I found the error by doing a line by line comparison to instructor files
+        //so, how do I get to the point where I track this stuff down on my own?
+        //another mistake I made was user => db.user.id in the call back function
+        //the db should not be inside the call back function
+        //solved
+        const user = db.users.find((user => user.id === id))
+        if (!user){
