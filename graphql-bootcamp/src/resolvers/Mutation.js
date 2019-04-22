@@ -1,4 +1,27 @@
+
+// Goal:mutation: updating a post
+// 1. Define Mutation
+// - add id/data for arguments.  Setup data to support title, body, and published
+// - return updated post
+// 2. create resolver METHOD 
+// - verify post exists, else throw error
+// - update post properties on at a Time 
+// 3.  verify work by updating all properties for a given post
+
+// Goal:mutation: updating a comment
+// 1. Define Mutation
+// - add id/data for arguments.  Setup data to support text
+// - return updated comment
+// 2. create resolver METHOD 
+// - verify comment exists, else throw error
+// - update comment properties on at a Time 
+// 3.  verify work by updating all properties for a given post
+
+
+
 import uuidv4 from 'uuid/v4'
+import { METHODS } from 'http';
+import { exists } from 'fs';
 
 const Mutation = {
     createUser(parent, args, { db }, info) {
@@ -162,6 +185,32 @@ return user
 
     },
 
+    updatePost(parent, args, { db }, info){
+        const { id, data } = args
+        const post = db.posts.find((post => post.id === id))
+        if (!post) {
+            throw new Error('Post not found')
+        }
+        // - add id/data for arguments.  Setup data to support title, body, and published
+        // - return updated post
+
+        if (typeof data.title === 'string'){
+            post.title = data.title
+        }
+
+        if (typeof data.body === 'string'){
+            post.body = data.body
+        }
+            
+        if (typeof data.published === 'boolean') {
+            post.published = data.published
+        }
+
+         
+        
+        return post
+    },
+
     createComment(parent, args, { db }, info){
         const userExists = db.users.some((user) => user.id === args.data.author)
         const postExists = db.posts.some((post) => post.id === args.data.post && post.published)
@@ -188,8 +237,31 @@ return user
 
 
         return deletedComment[0]
-    }
+    },
+    // Goal:mutation: updating a comment
+// 1. Define Mutation
+// - add id/data for arguments.  Setup data to support text
+// - return updated comment
+// 2. create resolver METHOD 
+// - verify comment exists, else throw error
+// - update comment properties on at a Time 
+// 3.  verify work by updating all properties for a given post
 
+    updateComment(parent, args, { db }, info) {
+        const { id, data } = args
+        const comment = db.comments.find((comment => comment.id === id))
+        if (!comment) {
+            throw new Error('comment not found')
+        }
+        // - add id/data for arguments.  Setup data to support title, body, and published
+        // - return updated post
+
+        if (typeof data.text === 'string') {
+            comment.text = data.text
+        }
+
+        return comment
+    },
 
 }
 
