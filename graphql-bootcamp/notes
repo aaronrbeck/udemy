@@ -113,6 +113,35 @@ challenge directions:
 //update all comments in the array to have a new author field (use one of the user ids as value)
 how does using the user ID (instead of the name work/function?)
 
+*****gql playground is not handling subscriptions well, or rather I am not navigating subscriptions
+in the playground correctly
+I've been having the playground 'crash' too, I will come back to the page and all
+ the tabs that I had once set up will be gone?  strange.  What am I doing?
+ It is like it stops listening, I conclude this because it stops saying 'listening' at the bottom of the page
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 how I resolved issues
 
 ******summary:

@@ -1,4 +1,4 @@
-import { METHODS } from "http";
+
 
 // for every  subscription we set up a new property
 // the property name needs to match the subscription name
@@ -10,25 +10,25 @@ import { METHODS } from "http";
 //imported on index.js from graphql-yoga and brought into here
 //via destructuring the context as seen below:
 const Subscription = {
-    count: {
-        subscribe(parent , args, { pubsub }, info) {
-            let count = 0
-            setInterval(() =>{
-                count++
-                pubsub.publish('count', {
-                    count
+    // count: {
+    //     subscribe(parent , args, { pubsub }, info) {
+    //         let count = 0
+    //         setInterval(() =>{
+    //             count++
+    //             pubsub.publish('count', {
+    //                 count
 
-                })
-            }, 1000)
-            // in return pubsub.asyncIterator('count'), count is callled the channel name
-            //channel names do not have a standard nameing convention, invent your own and
-            //stick with it 
-            return pubsub.asyncIterator('count')
-        }
-    },
+    //             })
+    //         }, 1000)
+    //         // in return pubsub.asyncIterator('count'), count is callled the channel name
+    //         //channel names do not have a standard nameing convention, invent your own and
+    //         //stick with it 
+    //         return pubsub.asyncIterator('count')
+    //     }
+    // },
     
     comment: {
-        subscribe( parnt, { postId }, { db, pubsub }, info ) {
+        subscribe( parent, { postId }, { db, pubsub }, info ) {
             const post = db.posts.find((post) => post.id === postId && post.published)
             if (!post) {
                 throw new Error('Post not found')
@@ -38,10 +38,25 @@ const Subscription = {
             return pubsub.asyncIterator(`comment ${postId}`)
             //comments get created in the mutation file on the
             //createComments mutation, so that is where 
-            //pubsub.publish needs to get called
+            //pubsub.publish needs to get called and over there it looks like;
+            //pubsub.publish(`comment ${args.data.post}`, { comment })
 
         }
+    },
+
+    // Goals: posts Subscription
+    // define post subscription.  no args necessary, response should be a post object
+    // modify the mutation for creating a post to publish the new post DataCue
+    // only call pubsub.publish if the post had published set to tru
+    // don't worry about updatePost or deletpost
+    // test your work
+    post: {
+        subscribe( parent, { postId }, {db, pubsub }, info ) {
+            
+            return pubsub.asyncIterator('post')
+            
+            
+        }
     }
-    
 }
  export { Subscription as default }

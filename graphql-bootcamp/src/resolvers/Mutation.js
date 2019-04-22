@@ -17,11 +17,29 @@
 // - update comment properties on at a Time 
 // 3.  verify work by updating all properties for a given post
 
+//Goal: setup CREATED, UPDATED, DELETED for comment subscription
+// set up custom payload for comment subscription with 'mutation' and 'data'
+// update published call in createComment to send back CREATED  with the data
+// update the publish call in deleteComment using DELETED event
+// add publish call in updateComment using UPDATED event
+// test your work by creating , updateing, and deleteing comment
 
+//ENUM
+// 1.  A special type that defines a set of constants
+// 2. This type can then be sused as the type for a field (similar to scalar and custom object types)
+// 3. Values for the field must be one of the constants for the type
+
+//UserRole - standard, editor, admin
+//type User {
+//     role: UserRole!
+// }
+//
+//laptop.isOn - true - false
+//laptop.powerStatus - on - off - sleep
 
 import uuidv4 from 'uuid/v4'
-import { METHODS } from 'http';
-import { exists } from 'fs';
+
+
 
 const Mutation = {
     createUser(parent, args, { db }, info) {
@@ -130,7 +148,7 @@ return user
     },
 
 
-    createPost(parent, args, { db }, info){
+    createPost(parent, args, { db, pubsub }, info){
         const userExists = db.users.some((user) => user.id === args.data.author)
 
         if (!userExists) {
@@ -142,6 +160,23 @@ return user
             ...args.data
         }
         db.posts.push(post)
+        //because we have a subscription for posts, and posts
+        //get created here in createPost, we need to call pubsub.publish
+        //here providing two arguements inside a template literal string:
+        //the channel name, and the actual data 
+        //I failed to destructure pubsub out of ctx
+        //one thing I messed up what that I tried to provide the if published
+        //logic over in the subscription, when it really belongs here,
+        if (args.data.published){
+            pubsub.publish('post', { 
+                post: {
+                    mutation: 'CREATED',
+                    data: post
+                }
+            })
+        }
+       
+
         return post
     },
 
@@ -149,12 +184,12 @@ return user
     //     - check if posts exists, else throw error
     //     -remove and return post
     //     - remove all comments belonging to that post
-    deletePost(parent, args, { db }, info){
+    deletePost(parent, args, { db, pubsub }, info){
         const postIndex = db.posts.findIndex((post) => post.id === args.id)
         if (postIndex === -1) {
             throw new Error('post not found')
         }
-        const deletedPosts = db.posts.splice(postIndex, 1)
+        const [post] = db.posts.splice(postIndex, 1)
 
 
         //I tried including the following if statement? Why? I thought this was resetting 
@@ -178,16 +213,26 @@ return user
 
         db.comments = db.comments.filter((comment) => comment.post !== args.id)
 
+        //condition for subscriptions
+        if (post.published){
+            pubsub.publish('post',{
+            post:{
+                mutation: 'DELETED',
+                data: post
+            }
+            })
+        }
 
         //I did fail to include [0] in the following line which defines an 
         //array for the deletedPosts to land in
-        return deletedPosts[0]
+        return post
 
     },
 
-    updatePost(parent, args, { db }, info){
+    updatePost(parent, args, { db, pubsub }, info){
         const { id, data } = args
         const post = db.posts.find((post => post.id === id))
+        const originalPost = {...post}
         if (!post) {
             throw new Error('Post not found')
         }
@@ -204,9 +249,36 @@ return user
             
         if (typeof data.published === 'boolean') {
             post.published = data.published
+
+            if(originalPost.published && !post.published){
+                //fire deleted event
+                pubsub.publish('post', {
+                    post:{
+                        mutation: 'DELETED',
+                        data: originalPost
+                    }
+                })
+            }else if (!originalPost.published && post.published){
+                //fire created event
+                pubsub.publish('post', {
+                    post:{
+                        mutation: 'CREATED',
+                        data: post
+                    }
+                })
+            }
+        } else if (post.published){
+            //fire updated
+            pubsub.publish('post', {
+                post: {
+                    mutation: 'UPDATED',
+                    data: post
+                }
+            })
         }
 
-         
+        
+        
         
         return post
     },
@@ -217,7 +289,7 @@ return user
         if (!userExists || !postExists) {
             throw new Error('Did not find user and post')
         }
-
+// update published call in createComment to send back CREATED  with the data
         const comment = {
             id: uuidv4(),
             ...args.data
@@ -228,21 +300,30 @@ return user
         //get created here in createComment, we need to call pubsub.publish
         //here providing two arguements inside a template literal string:
         //the channel name, and the actual data 
-        pubsub.publish(`comment ${args.data.post}`, { comment })
+
+        
+
+        pubsub.publish(`comment ${args.data.post}`, { comment: {
+            mutation: 'CREATED',
+            data: comment
+        } })
 
         return comment
     },
     // 2. define resolver for the mutation
     //     - check if comment exists, else throw error 
     //     - remove and return the comment
-    deleteComment(parent, args, { db }, info){
+    deleteComment(parent, args, { db, pubsub }, info){
         const commentIndex = db.comments.findIndex((comment) => comment.id === args.id)
         if (commentIndex === -1) {
             throw new Error('comment not found')
         }
-        const deletedComment = db.comments.splice(postIndex, 1)
-
-
+        const [deletedComment] = db.comments.splice(postIndex, 1)
+        pubsub.publish(`comment ${deletedComment.post}`, { 
+            comment: {
+            mutation: 'DELETED',
+            data: deletedComment
+        }})
         return deletedComment[0]
     },
     // Goal:mutation: updating a comment
@@ -253,8 +334,7 @@ return user
 // - verify comment exists, else throw error
 // - update comment properties on at a Time 
 // 3.  verify work by updating all properties for a given post
-
-    updateComment(parent, args, { db }, info) {
+    updateComment(parent, args, { db, pubsub }, info) {
         const { id, data } = args
         const comment = db.comments.find((comment => comment.id === id))
         if (!comment) {
@@ -262,14 +342,24 @@ return user
         }
         // - add id/data for arguments.  Setup data to support title, body, and published
         // - return updated post
-
         if (typeof data.text === 'string') {
             comment.text = data.text
         }
-
+        // add publish call in updateComment using UPDATED event
+        pubsub.publish(`comment ${comment.post}`, {
+            comment: {
+                mutation: 'UPDATED',
+                data: comment
+            }
+        })
         return comment
     },
 
 }
 
 export {Mutation as default}
+
+
+
+
+
