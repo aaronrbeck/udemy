@@ -7,8 +7,8 @@ general:
 
 
 where I'm stuck:
-
-
+npm start: 
+Error: Cannot find module '../lib/babel-node'
 
 
 
