@@ -30,6 +30,34 @@ requires
 
 
 
+04-26-19
+specific goal:
+
+solve this non starting problem
+  search error message
+  oh, wait.   yesterday I started over. lets keep trying that
+  
+
+get immediate feedback:
+I have asked for help on this specific issue from classmates and Brad
+the needle has not moved.
+what next?  I will not have Tyler once I get to industry, I don't have him now.
+
+
+
+
+
+
+
+
+
+Lessons:
+46: docker-compose up -d / prisma deploy / prisma takes a prisma datamodel and builds out all graphql queries/mutations/subscriptions for you.
+
+47: 
+
+
+
 
 
 where I'm stuck
