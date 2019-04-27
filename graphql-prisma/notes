@@ -55,6 +55,17 @@ Lessons:
 46: docker-compose up -d / prisma deploy / prisma takes a prisma datamodel and builds out all graphql queries/mutations/subscriptions for you.
 
 47: 
+52: I don't understand why we need to write all these queries, mutations etc from Node.js,
+isn't the whole point of prisma that it will do all this heavy lifting for us?
+maybe he is just setting us up to understand that prisma can feed all these actions
+to node?
+
+
+
+
+
+
+
 
 
 
@@ -62,7 +73,7 @@ Lessons:
 
 where I'm stuck
 
-lesson 51
+
 
 
 
