@@ -15,3 +15,18 @@ type Post {
   published: Boolean!
   author: User!
 }
+
+# Goal: Add comments to Prisma API
+# 1. Copy the comment type definition and mark the id as unique
+type Comment {
+        id: ID! @id
+        text: String!
+        author: User!
+        post: Post!
+    }
+# 2. Redeploy the prisma app
+# 3. work with the comment API in GraphQl Playground
+#   a. update our only post to be published
+#   b.create a new User
+#   c. Have a new uswer comment on the one existing post (refer to schema for usage)
+#   d. fetch all comments (include comment text and author name)
