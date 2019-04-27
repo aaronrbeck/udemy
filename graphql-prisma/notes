@@ -1,0 +1,240 @@
+general
+https://www.udemy.com/graphql-bootcamp/learn/v4/t/lecture/11838218?start=0
+npm run start - babel script start
+Wed 2 pm.
+finished video 15
+
+***"When setting up a field who's value is another one of our
+custom types we have to define a function that tells graphql how to get,
+in this case author, if we had the post.  We are going to do that by 
+difining a new root property on resolvers, so alongside query resolver,
+not inside query, we are going to add a new property"***
+
+inut types are cool
+everything in input types must be scalar
+
+--always consider how types are connected and related, especially when you start
+building delete mutations.  for example, if you delete a user you also need 
+to figure out how to delete all their associated posts and associated comments
+
+
+Useful New dependancies:
+
+npm install babel-plugin-transorm-object-rest-spread
+allows you to spread one object into a second object
+requires
+"plugins": [
+        "transform-object-rest-spread"
+    ] 
+    to be added to your .bagelrc document
+
+
+
+04-26-19
+specific goal:
+
+solve this non starting problem
+  search error message
+  oh, wait.   yesterday I started over. lets keep trying that
+  I started over and got back to the same problem: npm start error
+
+get immediate feedback:
+I have asked for help on this specific issue from classmates and Brad
+the needle has not moved.
+what next?  I will not have Tyler once I get to industry, I don't have him now.
+
+
+
+
+
+
+
+
+
+Lessons:
+46: docker-compose up -d / prisma deploy / prisma takes a prisma datamodel and builds out all graphql queries/mutations/subscriptions for you.
+
+47: 
+
+
+
+
+
+where I'm stuck
+
+lesson 51
+
+
+
+
+
+
+**** still can't do this without looking back to instructor solution - how do I resolve that?
+
+****in general, how do I get back to a known?  When something breaks I never know what breaks it
+Even when I think I'm doing small steps and checking in between
+I never know what my last known was
+
+
+server not starting:
+ok, sometimes the server starts, but then fails with:
+The server is up!
+Error: The type of Mutation.createComment(post:) must be Input Type but got: Post!.
+
+
+**I don't understand where resovler args originate from
+
+
+lesson 21:
+challenge directions:
+//update all comments in the array to have a new author field (use one of the user ids as value)
+how does using the user ID (instead of the name work/function?)
+
+*****gql playground is not handling subscriptions well, or rather I am not navigating subscriptions
+in the playground correctly
+I've been having the playground 'crash' too, I will come back to the page and all
+ the tabs that I had once set up will be gone?  strange.  What am I doing?
+ It is like it stops listening, I conclude this because it stops saying 'listening' at the bottom of the page
+
+**** I don't understand enums - this instructor is basically using it as
+a spell check step?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+how I resolved issues
+
+******summary:
+-failed to pass an argument to a newly built resolver function
+- server not starting: shutting vsc down, restarting project fixes this problem - don't know why
+     -I've had to do the above iii times
+- another project was running on port 4000
+- at one point in the course we copy and paste node modules 
+    between project folders.  This was not a problem for the instructor
+    but I eventually figured out that I needed to remove node modules folders
+    then npm install to create a new node modules folder
+
+
+
+
+
+
+*******extended:
+
+*starting server -
+I've got an odd thing going on when I try to npm run start.  I will copy and past error message in here
+next time it happens.  What seems odd is that it seems random and inconsistant - I'm sure it's not, but
+it feels like it will work on moment, not the next, then it will work again the next try.  something
+about being verbose shows up in the error message
+
+------the following was eventually corrected by removing node modules folder and npm installing a new
+------node modules folder via npm install
+------one thing that was a bit frustrating was that I didn't track down an answer untill I changed start script to include nodemon
+------so with nodemon I was able to get an error message that lead to a solution
+------without nodemond in start script I was not able to get an error message that lead to a solution, yet it was the same solution either way
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! graphql-bootcamp@1.0.0 start: `babel-node src/index.js`
+I had a mutation resolver function : const emailTaken = users.some(()
+that needed to be: const emailTaken = users.some((user)
+so I had failed to pass an argument into the function
+and I had an extra closing }
+
+Aarons-MacBook-Air:udemy aaronrbeck$ node index.jsinternal/modules/cjs/loader.js:651
+    throw err;
+
+    Error: Cannot find module '/Users/aaronrbeck/Documents/Assignments/sandbox/udemy/index.js'
+Error: Cannot find module '/Users/aaronrbeck/Documents/Assignments/sandbox/udemy/index.js'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:649:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:575:25)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:862:12)
+    at internal/main/run_main_module.js:21:11
+so, a dependancy is missing? how do you know which depandancy?
+
+this is so bizzare. at times it feel like modules just decide to randomly disconnect?
+i tried an npm install, then another run start, but got this:
+npm ERR! path /Users/aaronrbeck/Documents/Assignments/sandbox/udemy/package.json
+npm ERR! code ENOENT
+npm ERR! errno -2
+npm ERR! syscall open
+npm ERR! enoent ENOENT: no such file or directory, open '/Users/aaronrbeck/Documents/Assignments/sandbox/udemy/package.json'
+
+
+video 17 arrays part II
+queries with parameters not working
+I had parts of resolvers incorrect:
+
+ query: users(query: String): [User]!
+ with resolver:
+ users(parent, args, ctx, info){
+            if (args.query){
+                    return users
+            }
+            return users.filter((user)=>{
+                return user.name.toLowerCase().includes(args.query.toLowerCase())
+            })
+        },
+
+        changing if (args.query){
+            to if (!args.query){
+                fixed the problem.
+I'm not 100% what that crucial ! does.  found answer by comparing to instructor code
+    
+
+    ***when I tried to add comments: [Comment!]
+    to the resolver Query i failed to include the []***
+        
+
+things I've learned:
+- I learned how to export and import specific things in and out of files and I learned the difference between a named export and a default export
+- Scalar types : just stores a single thing
+- Non-scalar types: object / array
+- Shift command p, shortcut is dispalayed to the side of whatever you are looking to do.
+- I finally understand args, how to define,query and require them, also have a much better understanding of how to 
+write simple resolvers
+
+updateUser(parent, args, { db }, info){
+        //when I added upDate user I failed to include
+        const { id, data } = args
+        //which meant that id had never been defined and while the file compiled
+        //when I ran the updateUswer mutation, the query failed and I got back:
+        // {
+        //     "data": null,
+        //         "errors": [
+        //             {
+        //                 "message": "Cannot read property 'id' of undefined",
+        // things are still not resolved
+        //Unfortunatly I was not adble to track this down on my own
+        //I found the error by doing a line by line comparison to instructor files
+        //so, how do I get to the point where I track this stuff down on my own?
+        //another mistake I made was user => db.user.id in the call back function
+        //the db should not be inside the call back function
+        //solved
+        const user = db.users.find((user => user.id === id))
+        if (!user){
+
+
+
+
+
+
+Spending time in the playground, I have become familiar enought with it to move 
+around ok, I think
