@@ -76,30 +76,80 @@ endpoint: 'http://localhost:4466'
 // 2 fetch all posts (id, title, body, published) and print to console
 // 3. view the list of posts and confirm that post did have it body and published values
 
-prisma.mutation.updatePost({
+// prisma.mutation.updatePost({
     //not sure if it matters, but I listed data then where
     //instructure went with - nope that didn't fix my mutation
     //nevertheless:
-    where:{
-        id: "cjuzqxtox00yi0706ymzpx7dd"
-    },
+    // where:{
+    //     id: "cjuzqxtox00yi0706ymzpx7dd"
+    // },
 
-    data:{
-        body: "updated body2",
-        published: true
-    }
+    // data:{
+    //     body: "updated body2",
+    //     published: true
+    // }
     // where:{
     //     id: "cjuyh7rxp00aa0706o09t2rl4"
     // }
-}, '{id}').then((data)=>{
-    //console.log(data) - instructor did not do this line
-    return prisma.query.posts(null, '{ id title body published }')
-}).then((data)=>{
-    // console.log(JSON.stringify(data, undefined, 2))
-    console.log(data)
-})
+// }, '{id}').then((data)=>{
+//     //console.log(data) - instructor did not do this line
+//     return prisma.query.posts(null, '{ id title body published }')
+// }).then((data)=>{
+//     // console.log(JSON.stringify(data, undefined, 2))
+//     console.log(data)
+// })
 //ok it looks like maybe I had structured everthing corectly but maybe i fed in a bad post id
 //at one point I did have an unhandled promise, which I fixed by closing a }
 //the mutation is working but for some reason the chained query is not working
 //ok, tracked down why the query was not working:
 //missing a return statement at:      return prisma.query.posts(null, '{ id title body published }')
+
+// 1Create a new post 
+// 2.Fetch all of the infor aobut the user
+
+const createPostForUser = async (authorID, data) =>{
+const post = await prisma.mutation.createPost({
+    data: {
+        ...data,
+        author:{
+            connect:{
+                id: authorID
+            }
+        }
+    }
+}, '{ id }')
+
+
+const user = await prisma.query.user({
+    where:{
+        id: authorID
+    }
+}, '{ id name email posts { id title published } }')
+return user
+}
+
+// createPostForUser("cjuyh7rxp00aa0706o09t2rl4", {
+//     title: 'Great books to read ',
+//     body: 'The War of Art',
+//     published: true
+// }).then((user)=>{
+//     console.log(JSON.stringify(user, undefined, 2))
+// })
+
+const updatePostForUser = async (postID, data) => {
+    const post = await prisma.mutation.updatePost({
+        where:{
+            id: postID
+        },
+        data
+    }, '{author{id}}')
+    const user = await prisma.query.user({
+        where:{
+            id: post.author.id
+        }
+    }, '{id name email posts {id title published}}')
+    return user
+}
+// updatePostForUser("cjv0c4p8l019c0706ttvn95rn", {published: false}).then((user) =>{
+//     console.log(JSON.stringify(user, undefined, 2))
+// })

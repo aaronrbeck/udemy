@@ -1,4 +1,8 @@
 general
+if you ever get an error saying something is not defined:
+-check spelling consistancy on that one thing
+-check to see if that one thing needs ()
+
 https://www.udemy.com/graphql-bootcamp/learn/v4/t/lecture/11838218?start=0
 npm run start - babel script start
 Wed 2 pm.
