@@ -1,0 +1,7 @@
+# enpoint sets service name - usually default, and stage name to default
+# you can see those names in pgadmin
+
+# we can create a new project call reveiws for service name and defualt for stage:
+
+endpoint: http://localhost:4466/reviews/default
+datamodel: datamodel.prisma

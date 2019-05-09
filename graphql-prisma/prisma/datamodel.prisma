@@ -1,8 +1,20 @@
+# whenever you make a change to this channel
+#   -cd into prisma folder and run prisma deploy
+
+# two options for deleting a User:
+# 1. SET_NULL default options
+#   - if a user is deleted his/her comments post will be set to SET_NULL
+#   this is problematic becuase of the required relationships with User and posts/comments
+# 2. CASCADE
+  # - use @relation
+    # -relations need to be set up on Both ends they are defined from
+
 type User {
   id: ID! @id
   name: String!
   email: String! @unique
-  posts: [Post!]!
+  posts: [Post!]! @relation(name: "PostToUser", onDelete: CASCADE)
+  comments: [Comment!]! @relation(name: "CommentToUser", onDelete: CASCADE)
   updatedAt: DateTime! @updatedAt
   createdAt: DateTime! @createdAt
 
@@ -13,7 +25,8 @@ type Post {
   title: String!
   body: String!
   published: Boolean!
-  author: User!
+  author: User! @relation(name: "PostToUser", onDelete: SET_NULL)
+  comments: [Comment!]! @relation(name: "CommentToPost", onDelete: CASCADE)
 }
 
 # Goal: Add comments to Prisma API
@@ -21,8 +34,8 @@ type Post {
 type Comment {
         id: ID! @id
         text: String!
-        author: User!
-        post: Post!
+        author: User! @relation(name: "CommentToUser", onDelete: SET_NULL)
+        post: Post! @relation(name: "CommentToPost", onDelete: SET_NULL)
     }
 # 2. Redeploy the prisma app
 # 3. work with the comment API in GraphQl Playground

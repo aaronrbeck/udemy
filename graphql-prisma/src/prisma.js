@@ -1,5 +1,4 @@
 import { Prisma } from 'prisma-binding'
-import { Binding } from 'graphql-binding';
 
 //build a constructor function with new operator
 //takes a single objects argument
@@ -11,6 +10,8 @@ typeDefs:'src/generated/prisma.graphql',
     //and endpoint as string
 endpoint: 'http://localhost:4466'
 })
+
+export { prisma as default }
 
 //4 key properties on the prisma object:
 //prisma.query, prisma.mutation, prisma.subscription,
@@ -107,26 +108,40 @@ endpoint: 'http://localhost:4466'
 // 1Create a new post 
 // 2.Fetch all of the infor aobut the user
 
-const createPostForUser = async (authorID, data) =>{
-const post = await prisma.mutation.createPost({
-    data: {
-        ...data,
-        author:{
-            connect:{
-                id: authorID
-            }
-        }
-    }
-}, '{ id }')
+// prisma.exists.Comment({
+//     id: "cjuzkqi8o00wh0706yrtw5spy",
+//     author:{
+//         id: "cjuyh7rxp00aa0706o09t2rl4"
+//     }
+// }).then((exists)=>{
+//     console.log(exists)
+// })
 
 
-const user = await prisma.query.user({
-    where:{
-        id: authorID
-    }
-}, '{ id name email posts { id title published } }')
-return user
-}
+// const createPostForUser = async (authorID, data) =>{
+//     const userExists = await prisma.exists.User({ id:authorID})
+//     if(!userExists) {
+//         throw new Error("user not found")
+//     }
+// const post = await prisma.mutation.createPost({
+//     data: {
+//         ...data,
+//         author:{
+//             connect:{
+//                 id: authorID
+//             }
+//         }
+//     }
+// }, '{ id author{id name email posts{id title published}}}')
+
+
+// const user = await prisma.query.user({
+//     where:{
+//         id: authorID
+//     }
+// }, '{ id name email posts { id title published } }')
+// return post.author
+// }
 
 // createPostForUser("cjuyh7rxp00aa0706o09t2rl4", {
 //     title: 'Great books to read ',
@@ -134,22 +149,39 @@ return user
 //     published: true
 // }).then((user)=>{
 //     console.log(JSON.stringify(user, undefined, 2))
+// }).catch((error)=>{
+//     console.log(error)
 // })
 
-const updatePostForUser = async (postID, data) => {
-    const post = await prisma.mutation.updatePost({
-        where:{
-            id: postID
-        },
-        data
-    }, '{author{id}}')
-    const user = await prisma.query.user({
-        where:{
-            id: post.author.id
-        }
-    }, '{id name email posts {id title published}}')
-    return user
-}
-// updatePostForUser("cjv0c4p8l019c0706ttvn95rn", {published: false}).then((user) =>{
+
+
+
+
+
+// goal: Improve updatePostForUser
+// 1. use prisma.exists to verify that the post exists
+// - if there is not post with that id, throw an error 
+// 2. remove unecessary user query by updating the selection for the updatePost
+// 3. add a catch method call to catch and print errors 
+// 4. test your work by updating an existing poset and a non-existant post
+
+
+// const updatePostForUser = async (postID, data) => {
+//     const postExists = await prisma.exists.Post({ id: postID })
+//     if (!postExists) {
+//         throw new Error("post not found")
+//     }
+//     const post = await prisma.mutation.updatePost({
+//         where:{
+//             id: postID
+//         },
+//         data
+//     }, '{id title author{id name email posts{id title published}}}')
+    
+//     return post.author
+// }
+// updatePostForUser("power", {published: false}).then((user) =>{
 //     console.log(JSON.stringify(user, undefined, 2))
+// }).catch((error)=>{
+// console.log(erro.message)
 // })

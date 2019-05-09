@@ -3,6 +3,25 @@ if you ever get an error saying something is not defined:
 -check spelling consistancy on that one thing
 -check to see if that one thing needs ()
 
+docker - multiple projects can use the same docker containers?
+    not totally sure how as I had a hard time making that happen two weeks ago 
+    but if you are using the same database, it should be possible?
+
+catches     are written written on the called method
+
+pg admin - I entered information from the heroku postgres database - lesson 43
+
+node js becomes middle man allowing data valididation and authentication
+node js goes between public user and public api
+
+
+killing an occupied port:
+kill $(lsof -t -i :YOUR_PORT_NUMBER)
+
+
+
+
+
 https://www.udemy.com/graphql-bootcamp/learn/v4/t/lecture/11838218?start=0
 npm run start - babel script start
 Wed 2 pm.
@@ -37,10 +56,6 @@ requires
 04-26-19
 specific goal:
 
-solve this non starting problem
-  search error message
-  oh, wait.   yesterday I started over. lets keep trying that
-  I started over and got back to the same problem: npm start error
 
 get immediate feedback:
 I have asked for help on this specific issue from classmates and Brad
@@ -78,8 +93,10 @@ to node?
 where I'm stuck
 
 
-
-
+    Lesson 59:
+    *** my node.js query at local host 4000 should be hitting my heroku hosted database, but i don't think it is
+    Ok, tracked this down to the fact that I'm looking at the defualt/default postgres schema, instad of the reveiws/default schema
+    so, how to point it at a different schema?
 
 
 
@@ -253,3 +270,24 @@ updateUser(parent, args, { db }, info){
 
 Spending time in the playground, I have become familiar enought with it to move 
 around ok, I think
+
+
+
+
+
+
+
+
+
+
+******** 4/29/19
+we did stand up, I say I have no blockers, sure enough I get back to my computer and now the gql playground is not reading my schema for some reason.
+Possible problems:
+qql does not see schema file  
+    databmodel -> deploy builds schema and is then transferred how to gql playground?
+    or heroku database is the problem?
+this seems to resolved itself, unfortunatly I'm not sure how
+I had done multiple prisma deploys, which did not help. I verified that the deploy was
+writting new tables to heroku postgres, which it was.
+I deployed yet again, and now I do have a schema. It makes no sense that just checking
+the database via a gui would influence the playground.  
