@@ -110,7 +110,16 @@ where I'm stuck
         I am so incredibly confused.  Over at local host 4000 I can build a valid post query using the query conditional word even though conditionals do not show up in the schema explorer for posts over at 4000.  wth?
         what?  now over at 4000 I don't have conditionals showing up in the schema explorer for user! it was there last time?!!  wth?
 
+Lesson 61
+*** I'm trying to add another post so I can eventually perfom some relational querying actions, but for some reason when I run the mutation I'm getting a message that the user is not found.  I am copy/pasting a user ID into the author field for the createPost mutation.  not sure how the author is not being found, when I pulled the id right off of the user query?
+*** it seems like I have some really difficult circular logic that is getting in the way of queries where required ! fields go in circles and prevent effective querries from getting run.
+*** this user not found thing is really bizarre, I can go over to the postgres table and see the users there, yet I am unable to create a new post?  what gives?
+*** so does this mean something is wrong with my createPost mutation resolver? - this is my guess because at the moment that mutation resolver is referenceing the internal db database in order to verify a user exists instead of the postgres/prisma table - so for the moment I'm going to continue on with the lesson without adding another post.  likely andrew will address this incorect database pointing in a future lesson
+
+
 **** still can't do this without looking back to instructor solution - how do I resolve that?
+
+
 
 ****in general, how do I get back to a known?  When something breaks I never know what breaks it
 Even when I think I'm doing small steps and checking in between
@@ -313,3 +322,7 @@ the database via a gui would influence the playground.
     so, how to point it at a different schema?
 *******resolved:    the answer was to change my endpoint in prisma.js from http://localhost:4466 to http://localhost:4466/reviews/default
 
+
+
+**********I'm still having a hard time using the playground schema explorer to help guide me on how to build mutations, specifically I'm not remembering how to syntactically structure the (data: ) portion, I think I'm forgetting that an object must be passed through that data: call, so (data:{})
+******* looked back in a mutation video and saw the structure
