@@ -41,6 +41,10 @@ building delete mutations.  for example, if you delete a user you also need
 to figure out how to delete all their associated posts and associated comments
 
 
+I don't think I really understand yet how nodeJS is the 'MiddleMan'
+
+
+
 Useful New dependancies:
 
 npm install babel-plugin-transorm-object-rest-spread

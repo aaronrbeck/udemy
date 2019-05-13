@@ -42,67 +42,32 @@ import uuidv4 from 'uuid/v4'
 
 
 const Mutation = {
-    createUser(parent, args, { db }, info) {
-        const emailTaken = db.users.some((user) => user.email === args.email)
-
-        if (emailTaken) {
+    async createUser(parent, args, { prisma }, info) {
+        const emailTaken = await prisma.exists.User({ email: args.data.email })
+        if (emailTaken){
             throw new Error('Email taken')
         }
 
-
-        // example npm install babel - plugin - transorm - object - rest - spread
-        // see notes page for reminder
-        // const one = {
-        //     name: 'Philidelphia',
-        //     country: 'USA'
-
-        // }
-        // const two = {
-        //     population: 15000000
-        //     ...one
-        // }
-
-        //manual, no babel spread plugin below:
-        const user = {
-            id: uuidv4(),
-            name: args.name,
-            email: args.email,
-            age: args.age
-        }
-
-        db.users.push(user)
-
-        return user
+        return prisma.mutation.createUser({ data: args.data}, info )
     },
 
-    deleteUser(parent, args, { db }, info){
-        const userIndex = db.users.findIndex((user) => user.id === args.id)
+    async deleteUser(parent, args, { prisma }, info){
+        const userExists = await prisma.exists.User({ id: args.id })
 
-        if (userIndex === -1) {
-            throw new Error('No user found')
+        if (!userExists){
+            throw new Error('User not found')
         }
-
-        const deletedUsers = db.users.splice(userIndex, 1)
-
-
-
-            //remove all associated posts and all associated comments:
-            ``
-        db.posts = db.posts.filter((post) => {
-            const match = post.author === args.id
-            if (match) {
-                db.comments = db.comments.filter((comment) => comment.post !== post.id)
+        //so prisma.mutation.deleteUser() is something provided by prisma, but how did I know that
+        //is something prisma defines, in other words, how do I discover what 
+        //prisma allows me to do as far as CRUD stuff for next time?  Where do I find these definitions?
+        //I guess I could find the .deleteUser via the playground?
+        return prisma.mutation.deleteUser({ 
+            where:{
+                id: args.id
             }
+         }, info)
 
-            return !match
 
-        })
-
-        //remove all comments this user created
-
-        db.comments = db.comments.filter((comment) => comment.author !== args.id)
-
-        return deletedUsers[0]
 
 
 
