@@ -14,6 +14,9 @@ pg admin - I entered information from the heroku postgres database - lesson 43
 node js becomes middle man allowing data valididation and authentication
 node js goes between public user and public api
 
+using prisma makes it so that you do not have to write as much conditional logic in your resolvers
+prisma handles a lot of conditional logic especially when it comes to relational data, which
+allows you to write more simple resolver functions than would otherwise be necessary
 
 killing an occupied port:
 kill $(lsof -t -i :YOUR_PORT_NUMBER)

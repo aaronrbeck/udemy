@@ -1,45 +1,10 @@
 
-// Goal:mutation: updating a post
-// 1. Define Mutation
-// - add id/data for arguments.  Setup data to support title, body, and published
-// - return updated post
-// 2. create resolver METHOD 
-// - verify post exists, else throw error
-// - update post properties on at a Time 
-// 3.  verify work by updating all properties for a given post
-
-// Goal:mutation: updating a comment
-// 1. Define Mutation
-// - add id/data for arguments.  Setup data to support text
-// - return updated comment
-// 2. create resolver METHOD 
-// - verify comment exists, else throw error
-// - update comment properties on at a Time 
-// 3.  verify work by updating all properties for a given post
-
-//Goal: setup CREATED, UPDATED, DELETED for comment subscription
-// set up custom payload for comment subscription with 'mutation' and 'data'
-// update published call in createComment to send back CREATED  with the data
-// update the publish call in deleteComment using DELETED event
-// add publish call in updateComment using UPDATED event
-// test your work by creating , updateing, and deleteing comment
-
-//ENUM
-// 1.  A special type that defines a set of constants
-// 2. This type can then be sused as the type for a field (similar to scalar and custom object types)
-// 3. Values for the field must be one of the constants for the type
-
-//UserRole - standard, editor, admin
-//type User {
-//     role: UserRole!
-// }
-//
-//laptop.isOn - true - false
-//laptop.powerStatus - on - off - sleep
 
 import uuidv4 from 'uuid/v4'
 
 
+//because we are using prisma, our functions need to be async (we are reaching 'outside'?)
+//and because we are using an async function we await the initial constant that we define
 
 const Mutation = {
     async createUser(parent, args, { prisma }, info) {
@@ -52,6 +17,7 @@ const Mutation = {
     },
 
     async deleteUser(parent, args, { prisma }, info){
+        //we manualy check to see if the user exists:
         const userExists = await prisma.exists.User({ id: args.id })
 
         if (!userExists){
@@ -73,9 +39,20 @@ const Mutation = {
 
     },
 
-    updateUser(parent, args, { db }, info){
+    async updateUser(parent, args, { prisma }, info){
+         //this time instead of doing the manual check upfront we let prisma do the checking to see if a user exists:
+         return prisma.mutation.updateUser({
+             where:{
+                 id: args.id
+             },
+             //I watched it a couple times, but I still am not able to follow everrything
+             //the instructor shares about the value data
+             //watch again at some point?
+             data: args.data
+         }, info)
+        
         //when I added upDate user I failed to include
-        const { id, data } = args
+        // const { id, data } = args
         //which meant that id had never been defined and while the file compiled
         //when I ran the updateUswer mutation, the query failed and I got back:
         // {
@@ -90,26 +67,26 @@ const Mutation = {
         //another mistake I made was user => db.user.id in the call back function
         //the db should not be inside the call back function
         //solved
-        const user = db.users.find((user => user.id === id))
-        if (!user){
-            throw new Error ('User not found')
-        }
-        if (typeof data.email === "string"){
-            const emailTaken = db.users.some((user)=> user.email === data.email)
-            if (emailTaken){
-                throw new Error('Email Taken')
-            }
-            user.email = data.email
-        }
+//         const user = db.users.find((user => user.id === id))
+//         if (!user){
+//             throw new Error ('User not found')
+//         }
+//         if (typeof data.email === "string"){
+//             const emailTaken = db.users.some((user)=> user.email === data.email)
+//             if (emailTaken){
+//                 throw new Error('Email Taken')
+//             }
+//             user.email = data.email
+//         }
 
-        if (typeof data.name === 'string'){
-            user.name = data.name
-        }
+//         if (typeof data.name === 'string'){
+//             user.name = data.name
+//         }
         
-        if (typeof data.age !== 'undefined'){
-            user.age = data.age
-        }
-return user
+//         if (typeof data.age !== 'undefined'){
+//             user.age = data.age
+//         }
+// return user
     },
 
 
