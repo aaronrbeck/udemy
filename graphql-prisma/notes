@@ -93,13 +93,22 @@ to node?
 where I'm stuck
 
 
-    Lesson 59:
-    *** my node.js query at local host 4000 should be hitting my heroku hosted database, but i don't think it is
-    Ok, tracked this down to the fact that I'm looking at the defualt/default postgres schema, instad of the reveiws/default schema
-    so, how to point it at a different schema?
+******* Somehow I have a dissconnect where my reviews$default postgres database has a table with a username column, but my playground only wants to be able to query "name" yet name does not exists in the table.  hmmm
 
+******* Lesson 60 something happened that gave the instructor access to a bunch of conditional statments via the playground, but it has not happened for me
+        -----so localhost 4000 is looking at a different schema?, the prisma conditionals are not present at local host 4000, but they are present at 4466
+        ------I think 4000 is setup to look at reviews/default databse and 4466 is looking at default/default database
+        I supposed what I am unclear about then is where all these conditions originated from.  I would guess prisma, but then why isn't it built into the localhost4000 system as well?
 
-
+****** Lesson 60: somehow the instructor is acccessing a where conditional by just using the word query in the playground - I think this is related to how he set up opArgs in the users query. When I try to use the word query the playground breaks, the playground wants me to use the word where, but I feel like the conditional where should have been identified via the if statement we set up in the users query
+        I have tried restarting the server and refresshing the playground to no avail
+        I continue to get confused as to which postgres table I'm looking at or which one I should be looking at, is that my problem?
+        suddenly both postgres databases have the prisma conditionals available, what changed?
+        still query is not available to me in the playground - where and others yes, but not query
+        but wait! things do work properly over on localhost4000,  query is available, so what the hell is going on.  localhost4000 is pointed at my default/default postgres table.  what the hell?
+        still so confused.  why are these conditional wheres not available for posts now?  wth?
+        I am so incredibly confused.  Over at local host 4000 I can build a valid post query using the query conditional word even though conditionals do not show up in the schema explorer for posts over at 4000.  wth?
+        what?  now over at 4000 I don't have conditionals showing up in the schema explorer for user! it was there last time?!!  wth?
 
 **** still can't do this without looking back to instructor solution - how do I resolve that?
 
@@ -291,3 +300,16 @@ I had done multiple prisma deploys, which did not help. I verified that the depl
 writting new tables to heroku postgres, which it was.
 I deployed yet again, and now I do have a schema. It makes no sense that just checking
 the database via a gui would influence the playground.  
+
+
+
+
+
+
+************** 5/13
+    Lesson 59:
+    *** my node.js query at local host 4000 should be hitting my heroku hosted database, but i don't think it is
+    Ok, tracked this down to the fact that I'm looking at the defualt/default postgres schema, instad of the reveiws/default schema
+    so, how to point it at a different schema?
+*******resolved:    the answer was to change my endpoint in prisma.js from http://localhost:4466 to http://localhost:4466/reviews/default
+

@@ -7,9 +7,13 @@ const Query = {
                 //we should use those args in opArgs
                 if(args.query){
                     opArgs.where = {
+                        OR: [{
     //  refer to schema to see supported args, such as name_contains
                         name_contains: args.query
-                    }
+                    }, {
+                        email_contains: args.query
+                    }]
+                }
                 }
       
 
@@ -21,7 +25,7 @@ const Query = {
         //object: advantage is user can define this object via the info object
         //although we have a promise, resolver methods can take promises, there for just return:
 
-        return prisma.query.users(null, info)
+        return prisma.query.users(opArgs, info)
         
         
         // if (!args.query) {
@@ -54,8 +58,21 @@ const Query = {
     //         return isTitleMatch || isBodyMatch
     //     })
  
+    //set up object for operation arguments    
+    const opArgs = {}
+        //if query is provided, modify object to return only posts that have string in title or body
+        if (args.query){
+            opArgs.where = {
+                 OR:[{
+                     title_contains: args.query
+                 },{
+                     body_contains: args.query
+                 }
+                ]
+            }
 
-    return prisma.query.posts(null, info)
+        }
+    return prisma.query.posts(opArgs, info)
 
    },
 

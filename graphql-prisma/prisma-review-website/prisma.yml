@@ -4,4 +4,4 @@
 # we can create a new project call reveiws for service name and defualt for stage:
 
 endpoint: http://localhost:4466/reviews/default
-datamodel: datamodel.prisma
+datamodel: datamodel.graphql
