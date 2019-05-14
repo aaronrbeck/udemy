@@ -80,58 +80,25 @@ const Mutation = {
 
     },
 
-    updatePost(parent, args, { db, pubsub }, info){
-        const { id, data } = args
-        const post = db.posts.find((post => post.id === id))
-        const originalPost = {...post}
-        if (!post) {
-            throw new Error('Post not found')
-        }
-        // - add id/data for arguments.  Setup data to support title, body, and published
-        // - return updated post
+    updatePost(parent, args, { prisma }, info){
 
-        if (typeof data.title === 'string'){
-            post.title = data.title
-        }
+        return prisma.mutation.updatePost({
+            where:{
+                id: args.id
+            },
+            data: args.data
+            //i tried to line item the data points below,
+            //turns out all that data is actually allready in 'data' (I'm not sure how)
+            //so the instructor just assigned args.data.  How would I have known that on my own?
+            //I built the following object based on the structure I read in the playground - it seemed to have
+            //worked when I tested it, but not nearly as nice as the instructor's approach
+            // {
+            //     title: args.data.title,
+            //     body: args.data.body,
+            //     published: args.data.published
+            // }
 
-        if (typeof data.body === 'string'){
-            post.body = data.body
-        }
-            
-        if (typeof data.published === 'boolean') {
-            post.published = data.published
-
-            if(originalPost.published && !post.published){
-                //fire deleted event
-                pubsub.publish('post', {
-                    post:{
-                        mutation: 'DELETED',
-                        data: originalPost
-                    }
-                })
-            }else if (!originalPost.published && post.published){
-                //fire created event
-                pubsub.publish('post', {
-                    post:{
-                        mutation: 'CREATED',
-                        data: post
-                    }
-                })
-            }
-        } else if (post.published){
-            //fire updated
-            pubsub.publish('post', {
-                post: {
-                    mutation: 'UPDATED',
-                    data: post
-                }
-            })
-        }
-
-        
-        
-        
-        return post
+        }, info)
     },
 
     createComment(parent, args, { db, pubsub }, info){
