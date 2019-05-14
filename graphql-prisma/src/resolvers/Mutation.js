@@ -139,25 +139,14 @@ const Mutation = {
         }})
         return deletedComment[0]
     },
-    updateComment(parent, args, { db, pubsub }, info) {
-        const { id, data } = args
-        const comment = db.comments.find((comment => comment.id === id))
-        if (!comment) {
-            throw new Error('comment not found')
-        }
-        // - add id/data for arguments.  Setup data to support title, body, and published
-        // - return updated post
-        if (typeof data.text === 'string') {
-            comment.text = data.text
-        }
-        // add publish call in updateComment using UPDATED event
-        pubsub.publish(`comment ${comment.post}`, {
-            comment: {
-                mutation: 'UPDATED',
-                data: comment
-            }
-        })
-        return comment
+    updateComment(parent, args, { prisma }, info) {
+    return prisma.mutation.updateComment({
+        where:{
+            id: args.id
+        },
+        data: args.data
+    }, info)
+    
     },
 
 }
