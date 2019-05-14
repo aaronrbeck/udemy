@@ -23,6 +23,11 @@ kill $(lsof -t -i :YOUR_PORT_NUMBER)
 
 
 
+datamodel.graphql ---- if it changes be sure and re-generate generated files by running
+npm run get-schema so that when prisma is redeployed it has the correct generated files that it looks at
+
+
+
 
 
 https://www.udemy.com/graphql-bootcamp/learn/v4/t/lecture/11838218?start=0

@@ -70,6 +70,11 @@ const Mutation = {
     }, info)
 },
         
+
+
+//how come the above create mutations need to be async, but the below deletes and mutations do not need to be async
+//aren't we "going outside" in any mutation?  as if it were any "fetch" call?
+//I don't understand
     deletePost(parent, args, { prisma }, info){
         return prisma.mutation.deletePost({
             where: {
@@ -101,36 +106,26 @@ const Mutation = {
         }, info)
     },
 
-    createComment(parent, args, { db, pubsub }, info){
-        const userExists = db.users.some((user) => user.id === args.data.author)
-        const postExists = db.posts.some((post) => post.id === args.data.post && post.published)
-        if (!userExists || !postExists) {
-            throw new Error('Did not find user and post')
-        }
-// update published call in createComment to send back CREATED  with the data
-        const comment = {
-            id: uuidv4(),
-            ...args.data
-        }
-        db.comments.push(comment)
+    createComment(parent, args, { prisma }, info){
+        return prisma.mutation.createComment({
+            //I tried passing the args data, but apparently you have to be specific.  maybe creations need to be specific, but updates do not need to be specific?
+            //data: data.args
+            data:{
+                text: args.data.text,
+                author:{
+                    connect:{
+                        id: args.data.author
+                    }
+                },
+                post:{
+                    connect:{
+                        id: args.data.post
+                    }
+                }
+            }
 
-        //because we have a subscription for comments, and comments
-        //get created here in createComment, we need to call pubsub.publish
-        //here providing two arguements inside a template literal string:
-        //the channel name, and the actual data 
-
-        
-
-        pubsub.publish(`comment ${args.data.post}`, { comment: {
-            mutation: 'CREATED',
-            data: comment
-        } })
-
-        return comment
+        },info)
     },
-    // 2. define resolver for the mutation
-    //     - check if comment exists, else throw error 
-    //     - remove and return the comment
     deleteComment(parent, args, { db, pubsub }, info){
         const commentIndex = db.comments.findIndex((comment) => comment.id === args.id)
         if (commentIndex === -1) {
@@ -144,14 +139,6 @@ const Mutation = {
         }})
         return deletedComment[0]
     },
-    // Goal:mutation: updating a comment
-// 1. Define Mutation
-// - add id/data for arguments.  Setup data to support text
-// - return updated comment
-// 2. create resolver METHOD 
-// - verify comment exists, else throw error
-// - update comment properties on at a Time 
-// 3.  verify work by updating all properties for a given post
     updateComment(parent, args, { db, pubsub }, info) {
         const { id, data } = args
         const comment = db.comments.find((comment => comment.id === id))
