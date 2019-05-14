@@ -102,6 +102,11 @@ however, during development we may still want to use 4466, so setup a json objec
   "Authorization":"Bearer prismageneratedtokenhere"
 }
 
+Lesson 67:
++added a password field to datamodel.prisma as well as schema.graphql
++instead of adding a pw for each user we wiped database (cd into prisma folder then run    prisma delet) and redeployed (prisma deploy from prisma folder)
++changed graphqlconfig( added "prisma":"prisma/prisma.yml" ) which points things not at 4466, but at our local project, which allows us to get around our new token/secret so that we can regenerate files
++re-generate files with npm run get-schema
 
 
 
