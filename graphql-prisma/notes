@@ -106,6 +106,13 @@ where I'm stuck
 
 
 
+**** I dont understand the difference between the playground at localhost 4000 and the one at 4466.
+    the one at 4466 has more information in the schema helper area for some reason
+    the one at 4000 is connected to the default$/default postgres db and is the one that we are making actual playground moves on
+    what creates each one?, why isn't all the information that is available at 4466 also available at 4000?
+    maybe 4466 is prisma on node, and 4000 represents the client?
+
+
 
 ******* Somehow I have a dissconnect where my reviews$default postgres database has a table with a username column, but my playground only wants to be able to query "name" yet name does not exists in the table.  hmmm
 
@@ -355,3 +362,24 @@ the database via a gui would influence the playground.
     when I run the mutation in the playground i get back the error of "message": "Cannot read property 'deleteComment' of undefined",
     hmmm...
 solution: I had a misspelled word in the refactored resolver
+
+
+
+
+
+
+
+****Lesson 47: setting up a subscription on 4466 I get back this message:
+"error": "Could not connect to websocket endpoint ws://localhost:4466/. Please check if the endpoint url is correct."
+---I refreshed the page, which seemed to help, but then got this message:
+"message": "Unknown argument 'postID' on field 'comment' of type 'Subscription'. (line 2, column 11):\n  comment(postID: \"10\") {\n          ^"
+  it is odd to me that we were looking in the local db for the post, but that is what the instructor did and it worked for him, this feel like my problem here, however
+--ok so actually instructor is over on 4000 for this move, when I try to make the move there I'm getting a formatting error. why?
+--figured it out: mis spelling of postId as postID, things are listening correctly
+
+
+
+
+
+
+

@@ -11,7 +11,7 @@
 //via destructuring the context as seen below:
 const Subscription = {
     // count: {
-    //     subscribe(parent , args, { pubsub }, info) {
+        // subscribe(parent , args, { pubsub }, info) {
     //         let count = 0
     //         setInterval(() =>{
     //             count++
@@ -28,18 +28,15 @@ const Subscription = {
     // },
     
     comment: {
-        subscribe( parent, { postId }, { db, pubsub }, info ) {
-            const post = db.posts.find((post) => post.id === postId && post.published)
-            if (!post) {
-                throw new Error('Post not found')
-
-            }
-
-            return pubsub.asyncIterator(`comment ${postId}`)
-            //comments get created in the mutation file on the
-            //createComments mutation, so that is where 
-            //pubsub.publish needs to get called and over there it looks like;
-            //pubsub.publish(`comment ${args.data.post}`, { comment })
+        subscribe( parent, { postId }, { prisma }, info ) {
+            
+            return prisma.subscription.comment({
+                where:{
+                    node:{
+                        id: postID
+                    }
+                }
+            }, info)
 
         }
     },
