@@ -41,16 +41,16 @@ const Subscription = {
         }
     },
 
-    // Goals: posts Subscription
-    // define post subscription.  no args necessary, response should be a post object
-    // modify the mutation for creating a post to publish the new post DataCue
-    // only call pubsub.publish if the post had published set to tru
-    // don't worry about updatePost or deletpost
-    // test your work
     post: {
-        subscribe( parent, { postId }, {db, pubsub }, info ) {
+        subscribe( parent, { postId }, { prisma }, info ) {
             
-            return pubsub.asyncIterator('post')
+            return prisma.subscription.post({
+                where:{
+                    node:{
+                    published: true
+                }
+            }
+            },info)
             
             
         }
