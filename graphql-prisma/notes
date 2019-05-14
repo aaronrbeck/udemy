@@ -105,6 +105,8 @@ to node?
 where I'm stuck
 
 
+
+
 ******* Somehow I have a dissconnect where my reviews$default postgres database has a table with a username column, but my playground only wants to be able to query "name" yet name does not exists in the table.  hmmm
 
 ******* Lesson 60 something happened that gave the instructor access to a bunch of conditional statments via the playground, but it has not happened for me
@@ -347,3 +349,9 @@ the database via a gui would influence the playground.
 **** this is where I'm getting the circular problem I mentioned earlier
     so the only post Id i can access via the playground is a ruturn Id after adding a post mutation, but even that id is no functrioning in the , oh wait.  do I need to restart the server?
     yes, that was the problem.  needed to restart server.  still not sure what the problem is with the post query
+
+
+*****Lesson 64: deleteComment mutation resolver refactored for prisma
+    when I run the mutation in the playground i get back the error of "message": "Cannot read property 'deleteComment' of undefined",
+    hmmm...
+solution: I had a misspelled word in the refactored resolver
