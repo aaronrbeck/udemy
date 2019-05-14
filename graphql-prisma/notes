@@ -108,11 +108,14 @@ Lesson 67:
 +changed graphqlconfig( added "prisma":"prisma/prisma.yml" ) which points things not at 4466, but at our local project, which allows us to get around our new token/secret so that we can regenerate files
 +re-generate files with npm run get-schema
 
-
+Lesson 68: storing pw's 
++npm uninstall uuid 
++npm install bcryptjs
 
 
 
 where I'm stuck
+
 
 
 
@@ -387,6 +390,9 @@ solution: I had a misspelled word in the refactored resolver
 --ok so actually instructor is over on 4000 for this move, when I try to make the move there I'm getting a formatting error. why?
 --figured it out: mis spelling of postId as postID, things are listening correctly
 
+****68
+over in pgadmin when trying to access a table I get error: "list index out of range"
+I refreshed the pgadmin page, then refound my database - seems to have worked
 
 
 

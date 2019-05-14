@@ -1,19 +1,28 @@
 
 
-import uuidv4 from 'uuid/v4'
+import bcrypt from 'bcryptjs'
 
-
-//because we are using prisma, our functions need to be async (we are reaching 'outside'?)
-//and because we are using an async function we await the initial constant that we define
-
+//take in password -> validate password -> hash password -> generate auth token
 const Mutation = {
     async createUser(parent, args, { prisma }, info) {
-        const emailTaken = await prisma.exists.User({ email: args.data.email })
-        if (emailTaken){
-            throw new Error('Email taken')
+
+        //validate that pw is at least 8 characters long
+        if(args.data.password.length < 8 ){
+            throw new Error('Password must be 8 characters or longer.')
         }
 
-        return prisma.mutation.createUser({ data: args.data}, info )
+        //hash a plaintext pw using bcrypt:
+        const password = await bcrypt.hash(args.data.password, 10)
+        //the 2nd parameter (10) is a salt - random number of characters added to hash
+        //hash returns a promise which resolves with the hashed value, so we await it and stick it in the const password
+
+        return prisma.mutation.createUser({ 
+            data: {
+                ...args.data,
+                password
+            }
+            }, 
+            info )
     },
 
     async deleteUser(parent, args, { prisma }, info){
