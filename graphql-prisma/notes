@@ -112,6 +112,11 @@ Lesson 68: storing pw's
 +npm uninstall uuid 
 +npm install bcryptjs
 
+lesson 69: not sure what we did
+something to do with password tokens, he lost me a bit
+
+lesson 70:
+
 
 
 where I'm stuck
@@ -394,7 +399,8 @@ solution: I had a misspelled word in the refactored resolver
 over in pgadmin when trying to access a table I get error: "list index out of range"
 I refreshed the pgadmin page, then refound my database - seems to have worked
 
-
+***69 create authentication token
+json web token
 
 
 
