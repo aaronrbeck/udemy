@@ -22,6 +22,7 @@ killing an occupied port:
 kill $(lsof -t -i :YOUR_PORT_NUMBER)
 
 
+prisma.yml   --- if it changes you need to redeploy prisma from the prisma folder
 
 datamodel.graphql ---- if it changes be sure and re-generate generated files by running
 npm run get-schema so that when prisma is redeployed it has the correct generated files that it looks at
@@ -91,11 +92,15 @@ isn't the whole point of prisma that it will do all this heavy lifting for us?
 maybe he is just setting us up to understand that prisma can feed all these actions
 to node?
 
-
-
-
-
-
+Lesson 66:
+setting up a prisma secret, which forces user to go through node to access the prisma db instead of directly through 4466
+the secret gets setup in prisma.yml
+then in prisma.js you set up an object to validate the secret you created over in prisma.yml
+however, during development we may still want to use 4466, so setup a json object token in the http headers (lower left of 4466 playground) which allows access via that port
+        token is generated via prisma; cd into prisma folder then run: prisma token
+        {
+  "Authorization":"Bearer prismageneratedtokenhere"
+}
 
 
 

@@ -8,7 +8,8 @@ const prisma = new Prisma({
 //install graphql-cli
 typeDefs:'src/generated/prisma.graphql',
     //and endpoint as string
-endpoint: 'http://localhost:4466'
+endpoint: 'http://localhost:4466',
+secret: 'thisismysupersecrettext'
 })
 
 export { prisma as default }
