@@ -51,81 +51,33 @@ const Mutation = {
              data: args.data
          }, info)
         
-        //when I added upDate user I failed to include
-        // const { id, data } = args
-        //which meant that id had never been defined and while the file compiled
-        //when I ran the updateUswer mutation, the query failed and I got back:
-        // {
-        //     "data": null,
-        //         "errors": [
-        //             {
-        //                 "message": "Cannot read property 'id' of undefined",
-        // things are still not resolved
-        //Unfortunatly I was not adble to track this down on my own
-        //I found the error by doing a line by line comparison to instructor files
-        //so, how do I get to the point where I track this stuff down on my own?
-        //another mistake I made was user => db.user.id in the call back function
-        //the db should not be inside the call back function
-        //solved
-//         const user = db.users.find((user => user.id === id))
-//         if (!user){
-//             throw new Error ('User not found')
-//         }
-//         if (typeof data.email === "string"){
-//             const emailTaken = db.users.some((user)=> user.email === data.email)
-//             if (emailTaken){
-//                 throw new Error('Email Taken')
-//             }
-//             user.email = data.email
-//         }
-
-//         if (typeof data.name === 'string'){
-//             user.name = data.name
-//         }
-        
-//         if (typeof data.age !== 'undefined'){
-//             user.age = data.age
-//         }
-// return user
     },
 
 
-    createPost(parent, args, { db, pubsub }, info){
-        const userExists = db.users.some((user) => user.id === args.data.author)
-
-        if (!userExists) {
-            throw new Error('User not found')
-        }
-        //using the babel spread plugin below:
-        const post = {
-            id: uuidv4(),
-            ...args.data
-        }
-        db.posts.push(post)
-        //because we have a subscription for posts, and posts
-        //get created here in createPost, we need to call pubsub.publish
-        //here providing two arguements inside a template literal string:
-        //the channel name, and the actual data 
-        //I failed to destructure pubsub out of ctx
-        //one thing I messed up what that I tried to provide the if published
-        //logic over in the subscription, when it really belongs here,
-        if (args.data.published){
-            pubsub.publish('post', { 
-                post: {
-                    mutation: 'CREATED',
-                    data: post
+    async createPost(parent, args, { prisma }, info){
+        return prisma.mutation.createPost({
+        //my incorrect attempt:
+            //     where: {
+        //         id: args.id
+        //     },
+        //     data: args.data
+        // }, info )
+            //I needed to have investigated the PostCreateInput information to have known what to include for the data
+        //instructor correct format:
+        data:{
+            title: args.data.title,
+            body: args.data.body,
+            published: args.data.published,
+            author: {
+                connect: {
+                    id: args.data.author
                 }
-            })
+            }
+
         }
-       
-
-        return post
-    },
-
-    // 2. define resolver for the mutation
-    //     - check if posts exists, else throw error
-    //     -remove and return post
-    //     - remove all comments belonging to that post
+    }, info)
+},
+        
     deletePost(parent, args, { db, pubsub }, info){
         const postIndex = db.posts.findIndex((post) => post.id === args.id)
         if (postIndex === -1) {
