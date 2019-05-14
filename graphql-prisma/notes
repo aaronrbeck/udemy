@@ -333,3 +333,12 @@ the database via a gui would influence the playground.
 
 **********I'm still having a hard time using the playground schema explorer to help guide me on how to build mutations, specifically I'm not remembering how to syntactically structure the (data: ) portion, I think I'm forgetting that an object must be passed through that data: call, so (data:{})
 ******* looked back in a mutation video and saw the structure
+
+
+
+
+**** something goofy happening in lesson 64 where the deletePost mutation does not recognize any of my post Id's, either when sourced from pgAdmin or from the playground.
+***along with that I am unable to run a post query for some reason "Cannot return null for non-nullable field User.comments."
+**** this is where I'm getting the circular problem I mentioned earlier
+    so the only post Id i can access via the playground is a ruturn Id after adding a post mutation, but even that id is no functrioning in the , oh wait.  do I need to restart the server?
+    yes, that was the problem.  needed to restart server.  still not sure what the problem is with the post query

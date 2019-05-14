@@ -56,14 +56,6 @@ const Mutation = {
 
     async createPost(parent, args, { prisma }, info){
         return prisma.mutation.createPost({
-        //my incorrect attempt:
-            //     where: {
-        //         id: args.id
-        //     },
-        //     data: args.data
-        // }, info )
-            //I needed to have investigated the PostCreateInput information to have known what to include for the data
-        //instructor correct format:
         data:{
             title: args.data.title,
             body: args.data.body,
@@ -78,48 +70,13 @@ const Mutation = {
     }, info)
 },
         
-    deletePost(parent, args, { db, pubsub }, info){
-        const postIndex = db.posts.findIndex((post) => post.id === args.id)
-        if (postIndex === -1) {
-            throw new Error('post not found')
-        }
-        const [post] = db.posts.splice(postIndex, 1)
-
-
-        //I tried including the following if statement? Why? I thought this was resetting 
-        //our posts array and doing the actual deleting.  Instructor did not include this.
-        //what would it actually do? My mistake was trying to copy steps from the delete
-        //user down into the deletePosts step, above this if statement was needed to find
-        //posts that were created by a now deletedUser - so a case of blind hoop jumping I guess
-        // posts = posts.filter((post) => {
-        //     const match = post.id === args.id
-        //     if (match) {
-        //         posts = posts.filter((post) => args.id !== post.id)
-        //     }
-
-        //     return !match
-
-        // })
-
-
-
-        //remove all comments this user created
-
-        db.comments = db.comments.filter((comment) => comment.post !== args.id)
-
-        //condition for subscriptions
-        if (post.published){
-            pubsub.publish('post',{
-            post:{
-                mutation: 'DELETED',
-                data: post
+    deletePost(parent, args, { prisma }, info){
+        return prisma.mutation.deletePost({
+            where: {
+                id: args.id
             }
-            })
-        }
 
-        //I did fail to include [0] in the following line which defines an 
-        //array for the deletedPosts to land in
-        return post
+        }, info)
 
     },
 
