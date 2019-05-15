@@ -116,6 +116,9 @@ lesson 69: not sure what we did
 something to do with password tokens, he lost me a bit
 
 lesson 70:
+I did very poorly on the challenge, don't even know where/how to break down things to myself there was so much wrong
+the hashed password is stored on user.password
+plain text password is stored on args.data.password
 
 
 

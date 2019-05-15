@@ -7,13 +7,19 @@ import jwt from 'jsonwebtoken'
 
 
 //create a new token and pass 2 arguments to it, a payload object and a secret
-const token = jwt.sign({ id: 46 }, 'mysecret')
-console.log(token)
-const decoded = jwt.decode(token)
-console.log(decoded)
-const decoded2 = jwt.verify(token, 'mysecret')
-console.log(decoded2)
 
+
+const dummy = async () =>{
+    const email = 'email2@createUser'
+    const password = 'Red12345'
+
+    const hashedPassword ='$2a$10$3WCPjo4EQ1Dqwz94xyTcFu8MFLqRKROonQHwMyMfN6UKz3cPaO89i'
+
+    const isMatch = await bcrypt.compare(password, hashedPassword)    
+    console.log(isMatch)
+
+}
+dummy()
 
 const Mutation = {
     async createUser(parent, args, { prisma }, info) {
@@ -38,6 +44,25 @@ const Mutation = {
                 user,
                 token:jwt.sign({userId: user.id}, 'thisisasecret')
             }
+    },
+
+    //I still don't understand when to use async - as a beginner, just always use it
+    async login(parent, args, { prisma }, info){
+        const user = await prisma.query.user({ 
+            where:{
+                email: args.data.email
+            }})
+        if (!user){
+            throw new Error('Unable to login')
+        }
+
+
+            const isMatch = await bcrypt.compare(args.data.password, user.password)
+            if(!isMatch){
+                throw new Error('Unable to login')
+            }
+
+
     },
 
     async deleteUser(parent, args, { prisma }, info){
@@ -166,6 +191,8 @@ const Mutation = {
     }, info)
     
     },
+
+    
 
 }
 

@@ -21,7 +21,8 @@ type Mutation {
         deleteComment(id: ID!): Comment!
         updateComment(id: ID!, data: UpdateCommentInput!):Comment!
         
-    }
+        login(data: LoginUserInput!): AuthPayLoad!
+   }
 
 type Subscription{
     # count: Int!
@@ -36,6 +37,11 @@ type AuthPayLoad{
 }
 input CreateUserInput{
     name: String!
+    email: String!
+    password: String!
+}
+
+input LoginUserInput{
     email: String!
     password: String!
 }
