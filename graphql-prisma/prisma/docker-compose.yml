@@ -15,13 +15,17 @@ services:
             connector: postgres
             host: ec2-54-243-197-120.compute-1.amazonaws.com
             # database: de94qtofg0bmo8
-            database: d1kpfo6os7epqe
-            
+            # database: d1kpfo6os7epqe
+            database: d5vv7hl76jvudv
+
             # user: dslkdxjmaeindv
-            user: akqoikyaombjcc
+            # user: akqoikyaombjcc
+            user: uzdasnbqeajnnr
 
             # password: a563c636a0e8a7da918521b055350719744135d779f107ad6a89eae264ecffe1
-            password: 2738b5e763de9605f3398b47a2103f9484b15a101167840180721b19a3fb576e
+            # password: 2738b5e763de9605f3398b47a2103f9484b15a101167840180721b19a3fb576e
+            password: c43942c587b7092a0bce413e038d81a0ebd3cf53d0fa0f2b9bd72afecf712f3c
+            
             ssl: true
             rawAccess: true
             port: '5432'
