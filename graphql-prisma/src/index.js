@@ -26,11 +26,15 @@ const server = new GraphQLServer({
         Post,
         Comment
     },
-    context: {
+    context(request) {
+        //console.log(request.request.headers)
+        return{
         db,
         pubsub,
         //added in lesson 59, context becomes available in resolvers
-        prisma
+        prisma,
+        request
+        }
     }
 })
 

@@ -2,6 +2,7 @@
 
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import getUserId from '../utilities/getUserId'
 
 //take in password -> validate password -> hash password -> generate auth token
 
@@ -9,17 +10,6 @@ import jwt from 'jsonwebtoken'
 //create a new token and pass 2 arguments to it, a payload object and a secret
 
 
-const dummy = async () =>{
-    const email = 'email2@createUser'
-    const password = 'Red12345'
-
-    const hashedPassword ='$2a$10$3WCPjo4EQ1Dqwz94xyTcFu8MFLqRKROonQHwMyMfN6UKz3cPaO89i'
-
-    const isMatch = await bcrypt.compare(password, hashedPassword)    
-    console.log(isMatch)
-
-}
-dummy()
 
 const Mutation = {
     async createUser(parent, args, { prisma }, info) {
@@ -107,7 +97,9 @@ const Mutation = {
     },
 
 
-    async createPost(parent, args, { prisma }, info){
+     createPost(parent, args, { prisma, request }, info){
+        const userId = getUserId(request)
+        //get header value, parse out the token, verify...
         return prisma.mutation.createPost({
         data:{
             title: args.data.title,
@@ -115,7 +107,7 @@ const Mutation = {
             published: args.data.published,
             author: {
                 connect: {
-                    id: args.data.author
+                    id: userId
                 }
             }
 

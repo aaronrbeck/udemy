@@ -84,6 +84,7 @@ what next?  I will not have Tyler once I get to industry, I don't have him now.
 
 
 Lessons:
+lesson 43: install docker and set up heroku database
 46: docker-compose up -d / prisma deploy / prisma takes a prisma datamodel and builds out all graphql queries/mutations/subscriptions for you.
 
 47: 
@@ -120,9 +121,71 @@ I did very poorly on the challenge, don't even know where/how to break down thin
 the hashed password is stored on user.password
 plain text password is stored on args.data.password
 
+lesson 71:
+use auth token in createPost httpheader to get the token from the client to the server
+modified context in index.js from an object to a function that returns an object to allow us to access our request headers which is where authorization token lives (since we put it there in the playground)
+set up utilities directory
+
+
+
 
 
 where I'm stuck
+
+
+Lesson 71:
+running a createPost mutation with jwt and authorization in the http headers, getting back "data": null,
+  "errors": [
+    {
+      "message": "request is not defined",
+where do i need to define the request?
+so my token is working, otherwise I would get an authentication error
+I thought maybe I tracked things down haveing not fully destructured my 3 parameter in createPost function.  after changing from {prisma} to {prisma, request} i then got the following error:
+{
+      "message": "Whoops. Looks like an internal server error. Search your server logs for request ID: local:cjvpewlrl012q0806lnys4tf0",
+I don't know what server logs and request ID means and I don't know where to find server logs
+restarting server and refreshing playground do not resolve this issue
+
+after searching I used docker ps to find my container number(7ecd3dc40a02  ) then docker logs -f 7ecd3dc40a02  
+
+and got massive logs back, which seem to point to:
+Connection error: 
+org.postgresql.util.PSQLException: FATAL: password authentication failed for user "dslkdxjmaeindv"
+so what password is this all about?
+back to original problems as it appears in graphql playground:
+"message": "Whoops. Looks like an internal server error. Search your server logs for request ID: local:cjvpi3d1c013708067w3gq4sj",
+so I search for  cjvpi3d1c013708067w3gq4sj    in the docker log and I find this:
+{"key":"error/unhandled","requestId":"local:cjvpi3d1c013708067w3gq4sj","clientId":"default$default","payload":
+so does that mean I have a problem with the postgres side of things suddenly?
+it looks that way as when I try to refresh things in pgadmin I get this:
+FATAL:  password authentication failed for user "dslkdxjmaeindv"
+FATAL:  no pg_hba.conf entry for host "160.2.123.187", user "dslkdxjmaeindv", database "de94qtofg0bmo8", SSL off
+so then I refresh pgadmin page and I get a popup windo:
+FATAL: password authentication failed for user "dslkdxjmaeindv" FATAL: no pg_hba.conf entry for host "160.2.123.187", user "dslkdxjmaeindv", database "de94qtofg0bmo8", SSL off
+Please enter the password for the user 'dslkdxjmaeindv' to connect the server - "beck-prisma-devserver"
+Password      Save Password
+
+I have no clue where to look for that password!!
+I do not recal creating a password over at pgadmin, nor can I find a password saved in my pw storage area, not anywhere in this project.  what to do?
+I tried going to heroku, then I found the postgres db set up for this project, then went to settings, then grabbed the password.  This did not allow access once back in pgadmin
+In activity feed I did notice that heroku did an update to version5.  I tried rolling back to version 4, but password still does not work. hmm. computers are frustrating and so is being dependant on others
+One thing that is really strange is that pgadmin has me listed as user dslkdxjmaeindv but when I login to heroku that postgres db has me identified as user akqoikyaombjcc, yet both user names are associated with the server - "beck-prisma-devserver"
+I know at some point I had entered this heroku db access info into a file, but I don't remember where - oh yes, docker compose file
+yea, docker compose file info is a WAY different from what I'm seeing in heroku, but I know it all originated from heroku, so I'm totally confused.  Would heroku have just changed all my info?
+in heroku there is a second postgres database but those credentials are all differnent as well, and the name postgresql-solid-56654 does not fit with the udemy course naming convention.  
+let's say I do change my docker-compose.yml file to match what is now showing up in heroku, will I need to docker compose up again?
+
+the path I headed down:
+It appears that heroku (maybe because it is a free tier?) has changed the credentials of my heroku postgres db.  I changed the credentials over in pgadmin and regained access
+I also made those changes to my docker compose file.  then I killed by docker container, then ran docker-compose up -d to create a new container, then tried to run prisma deploy and I got this message:
+Aarons-MacBook-Air:prisma aaronrbeck$ prisma deploy
+ ▸    Could not connect to server at http://localhost:4466. Please
+ ▸    check if your server is running.
+ so I went to my project folder and npm started to get a server running, then back to prisma folder and tried to prisma deploy again
+now I am in a circle where it is asking me to install a new version of prisma, i do so, but it asks me to install a new prisma version, I do so but then it asks me to install a new prisma version, etc.
+so npm start stars a server on 4000, how do I start the server on 4466?  I guess I still do not understand the difference between the two.  4000 is the node server with prisma sitting on it and 4466 is the client graphql server, I think
+
+
 
 
 
